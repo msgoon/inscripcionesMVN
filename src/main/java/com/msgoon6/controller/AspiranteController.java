@@ -16,16 +16,16 @@
  */
 package com.msgoon6.controller;
 
-import com.msgoon6.EJB.CarreraFacadeLocal;
-import com.msgoon6.EJB.TipoIdentificacionFacadeLocal;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import com.msgoon6.model.Carrera;
 import com.msgoon6.model.TipoIdentificacion;
+import com.msgoon6.model.Carrera;
 import java.io.Serializable;
 import java.util.List;
+import com.msgoon6.EJB.CarreraDAO;
+import com.msgoon6.EJB.TipoIdentificacionDAO;
 
 /**
  *
@@ -36,12 +36,16 @@ import java.util.List;
 public class AspiranteController implements Serializable {
 
     @EJB
-    private TipoIdentificacionFacadeLocal tipoIdentificacionEJB;
+    private TipoIdentificacionDAO tipoIdentificacionEJB;
+    @EJB
+    private CarreraDAO carreraEJB;
     private List<TipoIdentificacion> tiposIdentificacion;
+    private List<Carrera> carreras;
 
     @PostConstruct
     public void init() {
         tiposIdentificacion = tipoIdentificacionEJB.findAllClientStatus(true);
+        carreras = carreraEJB.findAllClientStatusType(true, true);
     }
 
     public List<TipoIdentificacion> getTiposIdentificacion() {
@@ -50,6 +54,14 @@ public class AspiranteController implements Serializable {
 
     public void setTiposIdentificacion(List<TipoIdentificacion> tiposIdentificacion) {
         this.tiposIdentificacion = tiposIdentificacion;
+    }
+
+    public List<Carrera> getCarreras() {
+        return carreras;
+    }
+
+    public void setCarreras(List<Carrera> carreras) {
+        this.carreras = carreras;
     }
     
     

@@ -16,7 +16,7 @@
  */
 package com.msgoon6.EJB;
 
-import com.msgoon6.model.Carrera;
+import com.msgoon6.model.TipoIdentificacion;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -25,19 +25,21 @@ import javax.ejb.Local;
  * @author msgoon6
  */
 @Local
-public interface CarreraFacadeLocal {
+public interface TipoIdentificacionDAO {
 
-    void create(Carrera carrera);
+    void create(TipoIdentificacion tipoIdentificacion);
 
-    void edit(Carrera carrera);
+    void edit(TipoIdentificacion tipoIdentificacion);
 
-    void remove(Carrera carrera);
+    void remove(TipoIdentificacion tipoIdentificacion);
 
-    Carrera find(Object id);
+    TipoIdentificacion find(Object id);
 
-    List<Carrera> findAll();
+    List<TipoIdentificacion> findAll();
+    
+    List<TipoIdentificacion> findAllClientStatus(boolean isactive);
 
-    List<Carrera> findRange(int[] range);
+    List<TipoIdentificacion> findRange(int[] range);
 
     int count();
     

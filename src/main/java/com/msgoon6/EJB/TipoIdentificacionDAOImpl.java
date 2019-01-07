@@ -26,7 +26,7 @@ import javax.persistence.PersistenceContext;
  * @author msgoon6
  */
 @Stateless
-public class TipoIdentificacionFacade extends AbstractFacade<TipoIdentificacion> implements TipoIdentificacionFacadeLocal {
+public class TipoIdentificacionDAOImpl extends AbstractDAO<TipoIdentificacion> implements TipoIdentificacionDAO {
 
     @PersistenceContext(unitName = "primePU")
     private EntityManager em;
@@ -36,7 +36,7 @@ public class TipoIdentificacionFacade extends AbstractFacade<TipoIdentificacion>
         return em;
     }
 
-    public TipoIdentificacionFacade() {
+    public TipoIdentificacionDAOImpl() {
         super(TipoIdentificacion.class);
     }
     

@@ -23,6 +23,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -42,6 +44,9 @@ public class Carrera implements Serializable {
     private BigDecimal ad_client_id;
     @Column(name = "isactive")
     private char isactive;
+    @ManyToOne
+    @JoinColumn(name = "nivelacion_id")
+    private Carrera nivelacion_id;
 
     public int getCarrera_id() {
         return carrera_id;
@@ -73,6 +78,14 @@ public class Carrera implements Serializable {
 
     public void setIsactive(char isactive) {
         this.isactive = isactive;
+    }
+
+    public Carrera getNivelacion_id() {
+        return nivelacion_id;
+    }
+
+    public void setNivelacion_id(Carrera nivelacion_id) {
+        this.nivelacion_id = nivelacion_id;
     }
 
 }

@@ -27,11 +27,11 @@ import javax.persistence.criteria.Root;
  *
  * @author msgoon6
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractDAO<T> {
     
     private Class<T> entityClass;
     
-    public AbstractFacade(Class<T> entityClass) {
+    public AbstractDAO(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
     
@@ -67,6 +67,7 @@ public abstract class AbstractFacade<T> {
         predicates.add(cb.equal(elements.get("ad_client_id"), 1000001));
         predicates.add(cb.equal(elements.get("isactive"), active ? 'Y' : 'N'));
         cq.select(elements).where(predicates.toArray(new Predicate[]{}));
+        cq.orderBy(cb.asc(elements.get("name")));
         return getEntityManager().createQuery(cq).getResultList();
     }
     
