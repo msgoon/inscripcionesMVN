@@ -23,6 +23,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -30,29 +32,20 @@ import javax.persistence.Table;
  * @author msgoon6
  */
 @Entity
-@Table(name = "tipo_identificacion")
-public class TipoIdentificacion implements Serializable{
+@Table(name = "tipo_colegio")
+public class TipoColegio implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tipo_identificacion_id")
-    private Integer tipo_identificacion_id;
+    private int tipo_colegio_id;
     @Column(name = "name")
     private String name;
-    @Column(name = "Pattern")
-    private String Pattern;
     @Column(name = "ad_client_id")
     private BigDecimal ad_client_id;
     @Column(name = "isactive")
     private char isactive;
 
-    public Integer getTipo_identificacion_id() {
-        return tipo_identificacion_id;
-    }
-
-    public void setTipo_identificacion_id(Integer tipo_identificacion_id) {
-        this.tipo_identificacion_id = tipo_identificacion_id;
-    }
+    
 
     public String getName() {
         return name;
@@ -60,14 +53,6 @@ public class TipoIdentificacion implements Serializable{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPattern() {
-        return Pattern;
-    }
-
-    public void setPattern(String Pattern) {
-        this.Pattern = Pattern;
     }
 
     public BigDecimal getAd_client_id() {
@@ -84,6 +69,14 @@ public class TipoIdentificacion implements Serializable{
 
     public void setIsactive(char isactive) {
         this.isactive = isactive;
+    }
+
+    public int getTipo_colegio_id() {
+        return tipo_colegio_id;
+    }
+
+    public void setTipo_colegio_id(int tipo_colegio_id) {
+        this.tipo_colegio_id = tipo_colegio_id;
     }
 
 }

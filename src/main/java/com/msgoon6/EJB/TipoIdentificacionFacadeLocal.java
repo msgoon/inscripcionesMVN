@@ -25,7 +25,7 @@ import javax.ejb.Local;
  * @author msgoon6
  */
 @Local
-public interface TipoIdentificacionDAO {
+public interface TipoIdentificacionFacadeLocal {
 
     void create(TipoIdentificacion tipoIdentificacion);
 

@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
  * @author msgoon6
  */
 @Stateless
-public class CarreraDAOImpl extends AbstractDAO<Carrera> implements CarreraDAO {
+public class CarreraFacade extends AbstractFacade<Carrera> implements CarreraFacadeLocal {
 
     @PersistenceContext(unitName = "primePU")
     private EntityManager em;
@@ -41,7 +41,7 @@ public class CarreraDAOImpl extends AbstractDAO<Carrera> implements CarreraDAO {
         return em;
     }
 
-    public CarreraDAOImpl() {
+    public CarreraFacade() {
         super(Carrera.class);
     }
 

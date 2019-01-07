@@ -16,33 +16,28 @@
  */
 package com.msgoon6.EJB;
 
-import com.msgoon6.model.Carrera;
-import java.util.List;
-import javax.ejb.Local;
+import com.msgoon6.model.TipoSangre;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author msgoon6
  */
-@Local
-public interface CarreraDAO {
+@Stateless
+public class TipoSangreFacade extends AbstractFacade<TipoSangre> implements TipoSangreFacadeLocal {
 
-    void create(Carrera carrera);
+    @PersistenceContext(unitName = "primePU")
+    private EntityManager em;
 
-    void edit(Carrera carrera);
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-    void remove(Carrera carrera);
-
-    Carrera find(Object id);
-
-    List<Carrera> findAll();
-
-    List<Carrera> findAllClientStatus(boolean isactive);
-
-    List<Carrera> findAllClientStatusType(boolean isactive, boolean type);
-
-    List<Carrera> findRange(int[] range);
-
-    int count();
-
+    public TipoSangreFacade() {
+        super(TipoSangre.class);
+    }
+    
 }

@@ -16,7 +16,7 @@
  */
 package com.msgoon6.EJB;
 
-import com.msgoon6.model.TipoIdentificacion;
+import com.msgoon6.model.TipoColegio;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,7 +26,7 @@ import javax.persistence.PersistenceContext;
  * @author msgoon6
  */
 @Stateless
-public class TipoIdentificacionDAOImpl extends AbstractDAO<TipoIdentificacion> implements TipoIdentificacionDAO {
+public class TipoColegioFacade extends AbstractFacade<TipoColegio> implements TipoColegioFacadeLocal {
 
     @PersistenceContext(unitName = "primePU")
     private EntityManager em;
@@ -36,8 +36,8 @@ public class TipoIdentificacionDAOImpl extends AbstractDAO<TipoIdentificacion> i
         return em;
     }
 
-    public TipoIdentificacionDAOImpl() {
-        super(TipoIdentificacion.class);
+    public TipoColegioFacade() {
+        super(TipoColegio.class);
     }
     
 }

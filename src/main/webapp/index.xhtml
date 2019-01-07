@@ -12,15 +12,15 @@
                     <h:outputText value="Para empezar ingrese su número de cédula y escoja una carrera." />
                     <h:panelGrid columns="2" >
                         <h:outputText value="Tipo de Identificación" />
-                        <p:selectOneMenu style="text-align: left; width: 80%" id="tipoidentificacion" required="true" requiredMessage="Debe Seleccionar un tipo de Documento" >
+                        <p:selectOneMenu style="text-align: left; width: 80%" id="tipoidentificacion" value="#{aspiranteController.inscripcion.tipo_identificacion.tipo_identificacion_id}" required="true" requiredMessage="Debe Seleccionar un tipo de Documento" >
                             <f:selectItems value="#{aspiranteController.tiposIdentificacion}" var="tid" 
                                            itemLabel="#{tid.name}" itemValue="#{tid.tipo_identificacion_id}" />
                             <p:ajax event="change" update="taxid" />
                         </p:selectOneMenu>
                         <h:outputText value="Cédula" />
-                        <p:inputMask id="taxid" mask="999999999-9" required="true" requiredMessage="El Número de Identificación es Obligatorio" />
+                        <p:inputMask id="taxid" mask="#{aspiranteController.patron}" required="true" value="#{aspiranteController.inscripcion.taxid}" requiredMessage="El Número de Identificación es Obligatorio" />
                         <h:outputText style="text-align: left; width: 95%"  value="Seleccione Una Carrera"  />
-                        <p:selectOneMenu style="text-align: left; width: 100%" id="carrera" required="true" requiredMessage="Debe Seleccionar una Carrera" >
+                        <p:selectOneMenu style="text-align: left; width: 100%" id="carrera" value="#{aspiranteController.inscripcion.carrera.carrera_id}" required="true" requiredMessage="Debe Seleccionar una Carrera" >
                             <f:selectItems value="#{aspiranteController.carreras}" var="carr" 
                                            itemLabel="#{carr.name}" itemValue="#{carr.carrera_id}" />
                         </p:selectOneMenu>
