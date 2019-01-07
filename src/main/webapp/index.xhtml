@@ -2,14 +2,24 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
         <h:form>
-            <p:inputText />
-            <p:commandButton value="Register" />
+            <h:outputText value="Para empezar ingrese su número de cédula y escoja una carrera." />
+            <h:panelGrid columns="2" >
+                <h:outputText value="Tipo de Identificación" />
+                <p:selectOneMenu style="text-align: left; width: 80%" id="tipoidentificacion" >
+                    <f:selectItems value="#{aspiranteController.tiposIdentificacion}" var="tid" 
+                                   itemLabel="#{tid.name}" itemValue="#{tid.tipo_identificacion_id}" />
+                    <p:ajax event="change" update="taxid" />
+                </p:selectOneMenu>
+                <h:outputText value="Cédula" />
+                <p:inputMask id="taxid" mask="999999999-9" required="true" />
+            </h:panelGrid>
         </h:form>
     </h:body>
 </html>
