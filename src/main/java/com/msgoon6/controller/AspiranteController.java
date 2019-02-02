@@ -90,7 +90,11 @@ public class AspiranteController implements Serializable {
         inscripcion.setPhone2("");
         inscripcion.setIsactive("Y");
         inscripcion.setNumero(0);
-        Patron = tiposIdentificacion.get(0).getPattern();
+        try {
+            Patron = tiposIdentificacion.get(0).getPattern();
+        } catch (Exception e) {
+            Patron = "********";
+        }
         borndate = new Date();
         examen = false;
     }
