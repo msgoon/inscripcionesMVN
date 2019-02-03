@@ -25,8 +25,65 @@
                                            itemLabel="#{carr.name}" itemValue="#{carr.carrera_id}" />
                         </p:selectOneMenu>
                     </h:panelGrid>
+                    <p:commandButton action="#{aspiranteController.validateDocument}" value="Ingresar" icon="ui-icon-newwin" update=":frmResultado" />
                 </center>
-            </h:form>   
+            </h:form>
+            <p:dialog id="ag1" header="Datos Personales" widgetVar="wdlgResultado" closable="true"
+                      resizable="true" showEffect="clip" hideEffect="fold" modal="true" appendTo="@(body)" closeOnEscape="true">
+                <h:form id="frmResultado">
+                    <h:panelGrid columns="2" >
+                        <h:outputText style="text-align: left; width: 100%"  value="Apellidos" />
+                        <p:inputText onkeyup="this.value = this.value.toUpperCase();" value="#{aspiranteController.inscripcion.apellido}" required="true" requiredMessage="El campo APELLIDOS es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Nombres" />
+                        <p:inputText onkeyup="this.value = this.value.toUpperCase();" value="#{aspiranteController.inscripcion.nombreestudiante}" required="true" requiredMessage="El campo NOMBRES es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Direccion" />
+                        <p:inputText value="#{aspiranteController.inscripcion.address}" required="true" requiredMessage="El campo DIRECCIÓN es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Teléfono" />
+                        <p:inputMask value="#{aspiranteController.inscripcion.phone}" mask="999999999"  required="true" requiredMessage="El Campo TELÉFONO es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Fecha de Nacimiento" />
+                        <p:calendar value="#{aspiranteController.borndate}" required="true" requiredMessage="El campo FECHA DE NACIMIENTO es obligatorio" locale="es" navigator="true" pattern="yyyy/MM/dd" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Correo" />
+                        <p:inputText id="incorr" value="#{aspiranteController.inscripcion.mailtext}" required="true" requiredMessage="El campo CORREO es obligatorio" validatorMessage="El correo NO parece ser VÁLIDO."  >
+                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                        </p:inputText>
+                        <h:outputText style="text-align: left; width: 100%"  value="Celular" />
+                        <p:inputMask value="#{aspiranteController.inscripcion.phone2}" mask="9999999999"  required="true" requiredMessage="El campo CELULAR es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Seleccione Un Tipo de Sangre" />
+                        <p:selectOneMenu style="text-align: left; width: 80%" id="tiposangre" value="#{aspiranteController.inscripcion.tiposangre.tiposangre_id}" required="true" requiredMessage="El campo TIPO DE SANGRE es obligatorio" >
+                            <f:selectItems value="#{aspiranteController.tiposSangre}" var="sangre" 
+                                           itemLabel="#{sangre.name}" itemValue="#{sangre.tiposangre_id}" />
+                        </p:selectOneMenu>
+                        <h:outputText style="text-align: left; width: 100%"  value="Colegio de procedencia" />
+                        <p:autoComplete id="colegioprocedencia" value="#{aspiranteController.inscripcion.institucionprocedencia}" completeMethod="#{aspiranteController.completeText}" forceSelection="true"  required="true" requiredMessage="El campo INSTITUCIÓN DE PROCEDENCIA es obligatorio" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Seleccione Un Tipo de Colegio" />
+                        <p:selectOneMenu style="text-align: left; width: 80%" id="tipocolegio" value="#{aspiranteController.inscripcion.tipo_colegio.tipo_colegio_id}" required="true" requiredMessage="El campo TIPO COLEGIO es obligatorio">
+                            <f:selectItems value="#{aspiranteController.tiposColegio}" var="tc" 
+                                           itemLabel="#{tc.name}" itemValue="#{tc.tipo_colegio_id}" />
+                        </p:selectOneMenu>
+                        <h:outputText style="text-align: left; width: 100%"  value="Seleccione el tipo de Inscripción" />
+                        <p:selectBooleanButton id="tipoinscripcion" value="#{aspiranteController.examen}" onLabel="Solo Examen" offLabel="Nivelación y Examen" />
+                        <h:outputText style="text-align: left; width: 100%"  value="Seleccione Una Seccion" />
+                        <p:selectOneMenu style="text-align: left; width: 80%" id="seccion" value="#{aspiranteController.inscripcion.seccion.seccion_id}" required="true" requiredMessage="El campo SECCIÓN es obligatorio">
+                            <f:selectItems value="#{aspiranteController.secciones}" var="sec" 
+                                           itemLabel="#{sec.name}" itemValue="#{sec.seccion_id}" />
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <p:commandButton action="#{aspiranteController.validateInfo}" value="Aceptar" icon="ui-icon-newwin" update=":frmResultado2" />
+                </h:form> 
+            </p:dialog>
+            <p:dialog id="ag2" header="Confirmación" widgetVar="wdlgResultado2" closable="true"
+                      resizable="true" showEffect="clip" hideEffect="fold" modal="true" appendTo="@(body)" closeOnEscape="true">
+                <h:form id="frmResultado2">
+                    <p>
+                        Gracias por haber culminado tu Pre-Inscripción, por favor has click en el botón Generar para imprimir tu hoja de Inscripción.
+                    </p>
+                    <br></br>
+                    <p>
+                        Para legalizar el proceso, acercate con la hoja impresa y copias de la cédula, título de bachiller o certificado de cursar tercero de Bachillerato.
+                    </p>
+                    <p:commandButton value="Generar" action="#{aspiranteController.preProcessPDF(document)}" style="margin: 15px 0 0 20px; background-image:none; background-color: #045491; color: white;" ajax="false"/>
+                </h:form>
+            </p:dialog>  
         </ui:define> 
     </ui:composition>
 </html>

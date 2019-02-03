@@ -45,6 +45,8 @@ public class TipoIdentificacion implements Serializable{
     private BigDecimal ad_client_id;
     @Column(name = "isactive")
     private char isactive;
+    @Column (name = "isvalidated")
+    private char isvalidated;
 
     public Integer getTipo_identificacion_id() {
         return tipo_identificacion_id;
@@ -84,6 +86,14 @@ public class TipoIdentificacion implements Serializable{
 
     public void setIsactive(char isactive) {
         this.isactive = isactive;
+    }
+
+    public char getIsvalidated() {
+        return isvalidated;
+    }
+
+    public void setIsvalidated(char isvalidated) {
+        this.isvalidated = isvalidated;
     }
 
 }

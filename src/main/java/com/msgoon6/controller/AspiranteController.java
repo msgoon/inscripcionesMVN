@@ -28,13 +28,27 @@ import com.msgoon6.model.TipoSangre;
 import java.io.Serializable;
 import java.util.List;
 import com.msgoon6.EJB.CarreraFacadeLocal;
+import com.msgoon6.EJB.InscripcionFacadeLocal;
 import com.msgoon6.EJB.SeccionFacadeLocal;
 import com.msgoon6.EJB.TipoColegioFacadeLocal;
 import com.msgoon6.EJB.TipoIdentificacionFacadeLocal;
 import com.msgoon6.EJB.TipoSangreFacadeLocal;
 import com.msgoon6.model.Inscripcion;
+import com.msgoon6.util.Util;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -54,11 +68,14 @@ public class AspiranteController implements Serializable {
     private TipoColegioFacadeLocal tipoColegioEJB;
     @EJB
     private TipoSangreFacadeLocal tipoSangreEJB;
+    @EJB
+    private InscripcionFacadeLocal inscripcionEJB;
     private static List<TipoIdentificacion> tiposIdentificacion;
     private static List<Carrera> carreras;
     private static List<Seccion> secciones;
     private static List<TipoColegio> tiposColegio;
     private static List<TipoSangre> tiposSangre;
+    private List<String> colegios;
     private String Patron;
     private Inscripcion inscripcion;
     private Date borndate;
@@ -71,6 +88,7 @@ public class AspiranteController implements Serializable {
         secciones = seccionEJB.findAllClientStatus(true);
         tiposColegio = tipoColegioEJB.findAllClientStatus(true);
         tiposSangre = tipoSangreEJB.findAllClientStatus(true);
+        colegios = inscripcionEJB.findSchools();
         inscripcion = new Inscripcion();
         inscripcion.setInscripcion_id(0);
         inscripcion.setApellido("");
@@ -90,6 +108,7 @@ public class AspiranteController implements Serializable {
         inscripcion.setPhone2("");
         inscripcion.setIsactive("Y");
         inscripcion.setNumero(0);
+        inscripcion.setAd_client_id(1000001);
         try {
             Patron = tiposIdentificacion.get(0).getPattern();
         } catch (Exception e) {
@@ -110,6 +129,99 @@ public class AspiranteController implements Serializable {
         } catch (Exception e) {
             return Patron;
         }
+    }
+
+    public void validateDocument() {
+        PrimeFaces current = PrimeFaces.current();
+        boolean continueFlag = false;
+        if (((TipoIdentificacion) getFromList(inscripcion.getTipo_identificacion().getTipo_identificacion_id(), 4)).getIsvalidated() == 'Y') {
+            if (this.validateCI(inscripcion.getTaxid())) {
+                continueFlag = true;
+            } else {
+                Util.ErrorMessage("El Número de Identificación no Cumple el Formato Requerido!", "Verifique los Datos.");
+            }
+        } else {
+            continueFlag = true;
+        }
+        if (continueFlag) {
+            try {
+                List<Inscripcion> tmp = inscripcionEJB.findByClientTaxIDCarrer(true, this.inscripcion.getTaxid(), this.inscripcion.getCarrera());
+                if (tmp.size() > 0) {
+                    borndate = new Date(tmp.get(0).getBorndate().getTime());
+                    examen = tmp.get(0).getIstest().equals("Y");
+                    this.inscripcion = tmp.get(0);
+                }
+                current.executeScript("PF('wdlgResultado').show();");
+            } catch (Exception e) {
+                Util.ErrorMessage(ExceptionUtils.getStackTrace(e), "Contacte al Administrador.");
+            }
+
+        }
+    }
+
+    public void validateInfo() {
+        PrimeFaces current = PrimeFaces.current();
+        boolean continueFlag = false;
+        if (!continueFlag) {
+            try {
+                current.executeScript("PF('wdlgResultado2').show();");
+            } catch (Exception e) {
+                Util.ErrorMessage(ExceptionUtils.getStackTrace(e), "Contacte al Administrador.");
+            }
+        }
+    }
+
+    //Boolean Function to Validate CI
+    public boolean validateCI(String taxid) {
+        //Variable Definitions
+        byte firstPair, thirdDigit, verificator, product, sum = 0, aux;
+        byte[] digits = new byte[9];
+        //Transformación de cada carácter a un byte
+        verificator = Byte.parseByte("" + taxid.charAt(9));
+        firstPair = Byte.parseByte(taxid.substring(0, 2));
+        thirdDigit = Byte.parseByte("" + taxid.charAt(2));
+        for (byte i = 0; i < 9; i++) {
+            digits[i] = Byte.parseByte("" + taxid.charAt(i));
+        }
+        //Verificar segundo dígito
+        if (firstPair >= 1 & firstPair <= 24) {
+            if (thirdDigit <= 6) {
+                //Módulo 10 multiplicar digitos impares por 2
+                for (byte i = 0; i < 9; i = (byte) (i + 2)) {
+                    product = (byte) (digits[i] * 2);
+                    if (product > 9) {
+                        product = (byte) (product - 9);
+                    }
+                    sum = (byte) (sum + product);
+                }
+                //Módulo 10 multiplicar digitos pares por 1
+                for (byte i = 1; i < 9; i = (byte) (i + 2)) {
+                    product = (byte) (digits[i] * 1);
+                    sum = (byte) (sum + product);
+                }
+                //Obtener la decena superior de la suma
+                aux = sum;
+                while (aux % 10 != 0) {
+                    aux = (byte) (aux + 1);
+                }
+                sum = (byte) (aux - sum);
+                //Comprobar la suma con dígito verificador (Último Dígito)
+                return sum == verificator;
+            }
+        }
+        return false;
+    }
+
+    public List<String> completeText(String query) {
+        List<String> filtered = new ArrayList<>();
+        filtered.add(query);
+        for (String col : colegios) {
+            if (col.contains(query)) {
+                filtered.add(col);
+            }
+        }
+
+        return filtered;
     }
 
     private static Object getFromList(Integer obj, Integer pivote) {
@@ -151,6 +263,50 @@ public class AspiranteController implements Serializable {
         }
 
         return resp;
+    }
+
+    public void verPDF(Object document, Inscripcion nueva) throws IOException, SQLException {
+        File jasper = new File("/usr/share/stanford/reportes/inscripcionOnline.jasper");
+        Map<String, Object> parameters = new HashMap();
+        parameters.put("Inscripcion_ID", nueva.getInscripcion_id());
+        parameters.put("name", "");
+        parameters.put("created", new Timestamp(new Date().getTime()));
+        byte[] bytes = inscripcionEJB.generatePDF(jasper, parameters);
+        if (bytes != null) {
+            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            response.setContentType("application/pdf");
+            response.setContentLength(bytes.length);
+
+            ServletOutputStream stream = response.getOutputStream();
+            stream.write(bytes, 0, bytes.length);
+            stream.flush();
+            stream.close();
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+
+    }
+
+    public void preProcessPDF(Object document) throws IOException {
+        try {
+            this.inscripcion.setBorndate(new Timestamp(borndate.getTime()));
+            this.inscripcion.setIstest(examen ? "Y" : "N");
+            try {
+                if (this.inscripcion.getInscripcion_id() > 0) {
+                    inscripcionEJB.edit(this.inscripcion);
+                } else {
+                    inscripcionEJB.create(inscripcion);
+                    this.inscripcion.setCarrera((Carrera) getFromList(this.inscripcion.getCarrera().getCarrera_id(), 1));
+                    this.inscripcion.setTipo_colegio((TipoColegio) getFromList(this.inscripcion.getTipo_colegio().getTipo_colegio_id(), 2));
+                    this.inscripcion.setSeccion((Seccion) getFromList(this.inscripcion.getSeccion().getSeccion_id(), 3));
+                }
+                verPDF(document, this.inscripcion);
+            } catch (IOException | SQLException e) {
+                Util.ErrorMessage(ExceptionUtils.getStackTrace(e), "Contacte al Administrador");
+            }
+        } catch (Exception e) {
+            FacesMessage msg = new FacesMessage(e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 
     public List<TipoIdentificacion> getTiposIdentificacion() {

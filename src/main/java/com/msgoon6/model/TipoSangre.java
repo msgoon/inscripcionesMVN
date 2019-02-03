@@ -45,14 +45,6 @@ public class TipoSangre implements Serializable {
     @Column(name = "isactive")
     private char isactive;
 
-    public int getCarrera_id() {
-        return tiposangre_id;
-    }
-
-    public void setCarrera_id(int tiposangre_id) {
-        this.tiposangre_id = tiposangre_id;
-    }
-
     public String getName() {
         return name;
     }
@@ -75,6 +67,14 @@ public class TipoSangre implements Serializable {
 
     public void setIsactive(char isactive) {
         this.isactive = isactive;
+    }
+
+    public int getTiposangre_id() {
+        return tiposangre_id;
+    }
+
+    public void setTiposangre_id(int tiposangre_id) {
+        this.tiposangre_id = tiposangre_id;
     }
 
 }

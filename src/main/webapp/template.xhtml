@@ -10,7 +10,6 @@
     </h:head>
 
     <h:body>
-        <p:messages id="mensaje" autoUpdate="true" />
         <p:layout fullPage="true">
             <p:layoutUnit position="north" header="Inscripciones Online">
             </p:layoutUnit>
@@ -20,6 +19,7 @@
             </p:layoutUnit>
 
             <p:layoutUnit position="center">
+                <p:messages id="mensaje" autoUpdate="true" />
                 <ui:insert name="body"/>
             </p:layoutUnit>
         </p:layout>

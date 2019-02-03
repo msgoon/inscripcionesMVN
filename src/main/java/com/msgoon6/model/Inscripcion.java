@@ -18,7 +18,6 @@ package com.msgoon6.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -79,6 +78,8 @@ public class Inscripcion implements Serializable {
     @Column(name = "isactive")
     private String isactive;
     private Integer numero;
+    @Column(name = "ad_client_id")
+    private Integer ad_client_id;
     
     public Integer getInscripcion_id() {
         return inscripcion_id;
@@ -222,6 +223,14 @@ public class Inscripcion implements Serializable {
 
     public void setNumero(Integer numero) {
         this.numero = numero;
+    }
+
+    public Integer getAd_client_id() {
+        return ad_client_id;
+    }
+
+    public void setAd_client_id(Integer ad_client_id) {
+        this.ad_client_id = ad_client_id;
     }
     
 }
