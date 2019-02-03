@@ -1,2 +1,2 @@
 # inscripcionesMVN
-Proyecto Java - Primefaces - Maven para Insripciones
+Proyecto Java - Primefaces - JPA - Maven para Insripciones
