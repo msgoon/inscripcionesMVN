@@ -29,11 +29,13 @@ import java.io.Serializable;
 import java.util.List;
 import com.msgoon6.EJB.CarreraFacadeLocal;
 import com.msgoon6.EJB.InscripcionFacadeLocal;
+import com.msgoon6.EJB.PeriodoFacadeLocal;
 import com.msgoon6.EJB.SeccionFacadeLocal;
 import com.msgoon6.EJB.TipoColegioFacadeLocal;
 import com.msgoon6.EJB.TipoIdentificacionFacadeLocal;
 import com.msgoon6.EJB.TipoSangreFacadeLocal;
 import com.msgoon6.model.Inscripcion;
+import com.msgoon6.model.Periodo;
 import com.msgoon6.util.Util;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +44,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -70,6 +73,8 @@ public class AspiranteController implements Serializable {
     private TipoSangreFacadeLocal tipoSangreEJB;
     @EJB
     private InscripcionFacadeLocal inscripcionEJB;
+    @EJB
+    private PeriodoFacadeLocal periodoEJB;
     private static List<TipoIdentificacion> tiposIdentificacion;
     private static List<Carrera> carreras;
     private static List<Seccion> secciones;
@@ -80,6 +85,8 @@ public class AspiranteController implements Serializable {
     private Inscripcion inscripcion;
     private Date borndate;
     private boolean examen;
+    private final String jasperName = "inscripcionOnline.jasper";
+    private Periodo actual = null;
 
     @PostConstruct
     public void init() {
@@ -113,6 +120,12 @@ public class AspiranteController implements Serializable {
             Patron = tiposIdentificacion.get(0).getPattern();
         } catch (Exception e) {
             Patron = "********";
+        }
+
+        try {
+            actual = periodoEJB.findByClientStatusType(true, true).get(0);
+        } catch (Exception e) {
+            Util.ErrorMessage(ExceptionUtils.getStackTrace(e), ExceptionUtils.getStackTrace(e.getCause()));
         }
         borndate = new Date();
         examen = false;
@@ -266,11 +279,16 @@ public class AspiranteController implements Serializable {
     }
 
     public void verPDF(Object document, Inscripcion nueva) throws IOException, SQLException {
-        File jasper = new File("/usr/share/stanford/reportes/inscripcionOnline.jasper");
+        File jasper = new File("/usr/share/stanford/reportes/" + jasperName);
+        if (System.getProperty("os.name").contains("Windows")) {
+            jasper = new File("D:\\Documents\\Desarrollo\\STANFORD\\resources\\" + jasperName);
+        }
         Map<String, Object> parameters = new HashMap();
+        String dir = jasper.getAbsolutePath().split(jasperName)[0];
         parameters.put("Inscripcion_ID", nueva.getInscripcion_id());
-        parameters.put("name", "");
-        parameters.put("created", new Timestamp(new Date().getTime()));
+        parameters.put("name", (new java.text.SimpleDateFormat("EEEEE dd 'de' MMMMM 'de' yyyy", new Locale("es", "ES"))).format(actual.getStartdate()) + " - " + (new java.text.SimpleDateFormat("EEEEE dd 'de' MMMMM 'de' yyyy", new Locale("es", "ES"))).format(actual.getEnddate()));
+        parameters.put("created", inscripcion.getCreated());
+        parameters.put("dir", dir);
         byte[] bytes = inscripcionEJB.generatePDF(jasper, parameters);
         if (bytes != null) {
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
@@ -290,6 +308,7 @@ public class AspiranteController implements Serializable {
         try {
             this.inscripcion.setBorndate(new Timestamp(borndate.getTime()));
             this.inscripcion.setIstest(examen ? "Y" : "N");
+            this.inscripcion.setPeriodo_id(actual.getPeriodo_id());
             try {
                 if (this.inscripcion.getInscripcion_id() > 0) {
                     inscripcionEJB.edit(this.inscripcion);

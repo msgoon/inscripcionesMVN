@@ -32,7 +32,7 @@ import javax.persistence.Table;
  * @author msgoon6
  */
 @Entity
-@Table(name = "mm_inscripcion_tmp")
+@Table(name = "Inscripcion")
 public class Inscripcion implements Serializable {
 
     @Id
@@ -49,12 +49,22 @@ public class Inscripcion implements Serializable {
     private String phone;
     @Column(name = "borndate")
     private Timestamp borndate;
+    @Column(name = "created")
+    private Timestamp created;
+    @Column(name = "updated")
+    private Timestamp updated;
     @Column(name = "mailtext")
     private String mailtext;
     @Column(name = "institucionprocedencia")
     private String institucionprocedencia;
     @Column(name = "istest")
     private String istest;
+    @Column(name = "ad_org_id")
+    private Integer ad_org_id;
+    @Column(name = "createdby")
+    private Integer createdby;
+    @Column(name = "updatedby")
+    private Integer updatedby;
 
     @ManyToOne
     @JoinColumn(name = "tiposangre_id")
@@ -80,6 +90,17 @@ public class Inscripcion implements Serializable {
     private Integer numero;
     @Column(name = "ad_client_id")
     private Integer ad_client_id;
+    @Column(name = "período_id")
+    private Integer periodo_id;
+
+    public Inscripcion() {
+        this.created = new Timestamp(System.currentTimeMillis());
+        this.createdby = 100;
+        this.updated = new Timestamp(System.currentTimeMillis());
+        this.updatedby = 100;
+        this.ad_client_id = 1000001;
+        this.ad_org_id = 0;
+    }
     
     public Integer getInscripcion_id() {
         return inscripcion_id;
@@ -232,5 +253,53 @@ public class Inscripcion implements Serializable {
     public void setAd_client_id(Integer ad_client_id) {
         this.ad_client_id = ad_client_id;
     }
-    
+
+    public Integer getPeriodo_id() {
+        return periodo_id;
+    }
+
+    public void setPeriodo_id(Integer periodo_id) {
+        this.periodo_id = periodo_id;
+    }
+
+    public Integer getAd_org_id() {
+        return ad_org_id;
+    }
+
+    public void setAd_org_id(Integer ad_org_id) {
+        this.ad_org_id = ad_org_id;
+    }
+
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
+    public Timestamp getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
+
+    public Integer getCreatedby() {
+        return createdby;
+    }
+
+    public void setCreatedby(Integer createdby) {
+        this.createdby = createdby;
+    }
+
+    public Integer getUpdatedby() {
+        return updatedby;
+    }
+
+    public void setUpdatedby(Integer updatedby) {
+        this.updatedby = updatedby;
+    }
+
 }
